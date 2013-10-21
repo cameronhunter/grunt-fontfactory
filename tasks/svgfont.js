@@ -6,45 +6,80 @@
  * Licensed under the MIT license.
  */
 
-'use strict';
+"use strict";
+
+// Link: http://en.wikipedia.org/wiki/Private_Use_(Unicode)
+var UNICODE_PRIVATE_USE_AREA = {
+  start: 0xE000,
+  end: 0xF8FF
+};
+
+var DOMParser = require("xmldom").DOMParser;
+var Hogan = require("hogan.js");
+var Path = require("path");
+var StringUtils = require("strutil");
+var Temp = require('temporary');
 
 module.exports = function(grunt) {
 
-  // Please see the Grunt documentation for more information regarding task
-  // creation: http://gruntjs.com/creating-tasks
+  var dom = new DOMParser();
+  var temp = new Temp.Dir();
+  var fontTemplate = Path.join(__dirname, "..", "templates", "font.svg");
+  var font = Hogan.compile(grunt.file.read(fontTemplate));
 
-  grunt.registerMultiTask('svgfont', 'Create an SVG font from multiple SVG glyph files', function() {
-    // Merge task-specific and/or target-specific options with these defaults.
+  grunt.registerMultiTask("svgfont", "Create an SVG font from multiple SVG glyph files", function() {
+
     var options = this.options({
-      punctuation: '.',
-      separator: ', '
+      font: "my-svg-font"
     });
 
-    // Iterate over all specified file groups.
-    this.files.forEach(function(f) {
-      // Concat specified files.
-      var src = f.src.filter(function(filepath) {
-        // Warn on and remove invalid source files (if nonull was set).
-        if (!grunt.file.exists(filepath)) {
-          grunt.log.warn('Source file "' + filepath + '" not found.');
-          return false;
-        } else {
-          return true;
-        }
-      }).map(function(filepath) {
-        // Read file source.
-        return grunt.file.read(filepath);
-      }).join(grunt.util.normalizelf(options.separator));
+    this.files.forEach(function(files) {
+      // TODO: Check that number of glyphs isn't larger than the unicode private use area
+      // TODO: Provide some stability between builds when choosing the unicode codepoints
+      // TODO: Ensure all the glyphs are the same height
+      // TODO: Create CSS file
+      // TODO: Create HTML demo file
 
-      // Handle options.
-      src += options.punctuation;
+      // Create glyphs from SVG files
+      var glyphs = files.src.map(function(file, index) {
+        var svg = parseSVG(grunt.file.read(file));
+        var name = Path.basename(file).replace(/\.svg$/i, '');
+        var character = String.fromCharCode(UNICODE_PRIVATE_USE_AREA.start + index);
 
-      // Write the destination file.
-      grunt.file.write(f.dest, src);
+        return grunt.util._.merge(svg, {
+          name: name,
+          character: StringUtils.escapeToNumRef(character, 16)
+        });
+      });
 
-      // Print a success message.
-      grunt.log.writeln('File "' + f.dest + '" created.');
+      // Create SVG font file
+      grunt.file.write(Path.join(temp.path, options.font + ".svg"), font.render({
+        font: options.font,
+        canvasSize: glyphs[0].height,
+        glyphs: glyphs
+      }));
     });
+
   });
+
+  function parseSVG(contents) {
+    var doc = dom.parseFromString(contents, "application/xml");
+
+    // TODO: Handle possibility of no svg element
+    var svg = doc.getElementsByTagName("svg")[0];
+
+    // TODO: Handle possibility of 'px'
+    var width  = svg.getAttribute("width");
+    var height = svg.getAttribute("height");
+
+    // TODO: Handle possibility of no/multiple paths
+    var path = svg.getElementsByTagName("path")[0];
+
+    return {
+      width: svg.getAttribute("width"),
+      height: svg.getAttribute("height"),
+      d: path.getAttribute("d")
+    };
+  }
 
 };

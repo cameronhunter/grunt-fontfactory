@@ -30,22 +30,13 @@ module.exports = function(grunt) {
 
     // Configuration to be run (and then tested).
     svgfont: {
-      default_options: {
+      build: {
         options: {
         },
-        files: {
-          'tmp/default_options': ['test/fixtures/testing', 'test/fixtures/123'],
-        },
-      },
-      custom_options: {
-        options: {
-          separator: ': ',
-          punctuation: ' !!!',
-        },
-        files: {
-          'tmp/custom_options': ['test/fixtures/testing', 'test/fixtures/123'],
-        },
-      },
+        files: [{
+          src: ['test/fixtures/*.svg']
+        }],
+      }
     },
 
     // Unit tests.

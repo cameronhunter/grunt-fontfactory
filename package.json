@@ -28,6 +28,12 @@
   "scripts": {
     "test": "grunt test"
   },
+  "dependencies": {
+    "xmldom": "latest",
+    "hogan.js": "latest",
+    "strutil": "latest",
+    "temporary": "latest"
+  },
   "devDependencies": {
     "grunt-contrib-jshint": "~0.6.0",
     "grunt-contrib-clean": "~0.4.0",
