@@ -1,0 +1,43 @@
+{
+  "name": "grunt-svgfont",
+  "description": "Create an SVG font from multiple SVG glyph files",
+  "version": "0.0.0",
+  "homepage": "https://github.com/cameronhunter/grunt-svgfont",
+  "author": {
+    "name": "Cameron Hunter",
+    "email": "hello@cameronhunter.co.uk",
+    "url": "http://cameronhunter.co.uk"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/cameronhunter/grunt-svgfont.git"
+  },
+  "bugs": {
+    "url": "https://github.com/cameronhunter/grunt-svgfont/issues"
+  },
+  "licenses": [
+    {
+      "type": "MIT",
+      "url": "https://github.com/cameronhunter/grunt-svgfont/blob/master/LICENSE-MIT"
+    }
+  ],
+  "main": "Gruntfile.js",
+  "engines": {
+    "node": ">= 0.8.0"
+  },
+  "scripts": {
+    "test": "grunt test"
+  },
+  "devDependencies": {
+    "grunt-contrib-jshint": "~0.6.0",
+    "grunt-contrib-clean": "~0.4.0",
+    "grunt-contrib-nodeunit": "~0.2.0",
+    "grunt": "~0.4.1"
+  },
+  "peerDependencies": {
+    "grunt": "~0.4.1"
+  },
+  "keywords": [
+    "gruntplugin"
+  ]
+}
