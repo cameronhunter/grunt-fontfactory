@@ -1,6 +1,6 @@
-# grunt-fontfactory
+# grunt-fontfactory [![Build Status](https://secure.travis-ci.org/cameronhunter/grunt-fontfactory.png)](http://travis-ci.org/cameronhunter/grunt-fontfactory)
 
-> Create a font from multiple SVG glyph files
+Create a font from multiple SVG glyph files.
 
 ## Getting Started
 This plugin requires Grunt `~0.4.1`
