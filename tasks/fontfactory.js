@@ -18,6 +18,7 @@ var DOMParser = require("xmldom").DOMParser;
 var Hogan = require("hogan.js");
 var Path = require("path");
 var StringUtils = require("strutil");
+var Package = require("../package.json");
 
 module.exports = function(grunt) {
 
@@ -25,7 +26,7 @@ module.exports = function(grunt) {
   var fontTemplate = Path.join(__dirname, "..", "templates", "font.svg");
   var font = Hogan.compile(grunt.file.read(fontTemplate));
 
-  grunt.registerMultiTask("fontfactory", "Create an SVG font from multiple SVG glyph files", function() {
+  grunt.registerMultiTask("fontfactory", Package.description, function() {
     this.requiresConfig([this.name, this.target, "src"].join("."));
     this.requiresConfig([this.name, this.target, "dest"].join("."));
 
