@@ -1,7 +1,7 @@
 {
   "name": "grunt-fontfactory",
   "description": "Create a font from multiple SVG glyph files",
-  "version": "0.0.0",
+  "version": "0.1.0",
   "homepage": "https://github.com/cameronhunter/grunt-fontfactory",
   "author": {
     "name": "Cameron Hunter",
@@ -35,6 +35,7 @@
   },
   "devDependencies": {
     "grunt": "~0.4.1",
+    "grunt-bump": "latest",
     "grunt-contrib-clean": "latest",
     "grunt-contrib-jshint": "latest",
     "grunt-contrib-nodeunit": "latest",

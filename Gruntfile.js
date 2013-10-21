@@ -5,6 +5,21 @@ module.exports = function(grunt) {
   grunt.initConfig({
     temp: ".tmp",
 
+    bump: {
+      options: {
+        files: ["package.json"],
+        commit: true,
+        commitMessage: "Release v%VERSION%",
+        commitFiles: ["-a"],
+        createTag: true,
+        tagName: "v%VERSION%",
+        tagMessage: "Version %VERSION%",
+        push: true,
+        pushTo: "origin",
+        gitDescribeOptions: "--tags --always --abbrev=1 --dirty=-d"
+      }
+    },
+
     clean: {
       tests: ["<%= temp %>"],
     },
