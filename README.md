@@ -69,6 +69,7 @@ grunt.initConfig({
 
 ### Useful Links
 
+* [MDN - SVG Fonts](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/SVG_fonts)
 * [@font-face support](http://caniuse.com/#feat=fontface)
 * [TTF font support](http://caniuse.com/#feat=ttf)
 * [SVG font support](http://caniuse.com/#feat=svg-fonts)
