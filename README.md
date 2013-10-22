@@ -53,7 +53,7 @@ Default value: `'my-font'`
 
 A string value that is used to name your font-family.
 
-### Usage Examples
+### Example
 
 ```js
 grunt.initConfig({
@@ -66,3 +66,11 @@ grunt.initConfig({
   },
 })
 ```
+
+### Useful Links
+
+* [@font-face support](http://caniuse.com/#feat=fontface)
+* [TTF font support](http://caniuse.com/#feat=ttf)
+* [SVG font support](http://caniuse.com/#feat=svg-fonts)
+* [WOFF font support](http://caniuse.com/#feat=woff)
+* [EOT font support](http://caniuse.com/#feat=eot)
