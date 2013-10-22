@@ -10,7 +10,7 @@
 
 // http://en.wikipedia.org/wiki/Private_Use_(Unicode)
 var UNICODE_PRIVATE_USE_AREA = {
-  start: 0xE000,
+  start: 0xE001,
   end: 0xF8FF
 };
 
