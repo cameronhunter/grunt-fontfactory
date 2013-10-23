@@ -42,5 +42,10 @@ module.exports = function(grunt) {
   grunt.loadTasks("tasks");
 
   grunt.registerTask("default", ["test"]);
-  grunt.registerTask("test", ["clean", "fontfactory", "nodeunit", "clean"]);
+  grunt.registerTask("test", [
+    "clean",
+    "fontfactory",
+    "nodeunit",
+    // "clean"
+  ]);
 };

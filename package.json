@@ -31,7 +31,10 @@
   "dependencies": {
     "xmldom": "latest",
     "hogan.js": "latest",
-    "strutil": "latest"
+    "strutil": "latest",
+    "svg2ttf": "latest",
+    "ttf2woff": "latest",
+    "ttf2eot": "latest"
   },
   "devDependencies": {
     "grunt": "~0.4.1",

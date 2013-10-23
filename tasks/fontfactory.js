@@ -19,6 +19,16 @@ var Hogan = require("hogan.js");
 var Path = require("path");
 var StringUtils = require("strutil");
 var Package = require("../package.json");
+var Fs = require("fs");
+var FontConversion = {
+  svg2ttf: require("svg2ttf"),
+  ttf2eot: require("ttf2eot"),
+  ttf2woff: require("ttf2woff")
+};
+
+// TODO: Check that number of glyphs isn't larger than the unicode private use area
+// TODO: Provide some stability between builds when choosing the unicode codepoints
+// TODO: Ensure all the glyphs are the same height
 
 module.exports = function(grunt) {
 
@@ -34,30 +44,63 @@ module.exports = function(grunt) {
       font: "my-font"
     });
 
+    var done = this.async();
+
     this.files.forEach(function(files) {
-      // TODO: Check that number of glyphs isn't larger than the unicode private use area
-      // TODO: Provide some stability between builds when choosing the unicode codepoints
-      // TODO: Ensure all the glyphs are the same height
+      var fontDestination = Path.join(files.dest, options.font);
 
-      var glyphs = files.src.map(function(file, index) {
-        var svg = parseSVG(grunt.file.read(file));
-        var name = Path.basename(file).replace(/\.svg$/i, "");
-        var character = String.fromCharCode(UNICODE_PRIVATE_USE_AREA.start + index);
+      var svg = createSVG(fontDestination + ".svg", options.font, readGlyphs(files));
+      var ttf = createTTF(fontDestination + ".ttf", svg);
+      createEOT(fontDestination + ".eot", ttf);
+      createWOFF(fontDestination + ".woff", ttf, done);
+    });
+  });
 
-        return grunt.util._.merge(svg, {
-          name: name,
-          character: StringUtils.escapeToNumRef(character, 16)
-        });
+  function readGlyphs(files) {
+    return files.src.map(function(file, index) {
+      var svg = parseSVG(grunt.file.read(file));
+      var name = Path.basename(file).replace(/\.svg$/i, "");
+      var character = String.fromCharCode(UNICODE_PRIVATE_USE_AREA.start + index);
+
+      return grunt.util._.merge(svg, {
+        name: name,
+        character: StringUtils.escapeToNumRef(character, 16)
       });
+    });
+  }
 
-      grunt.file.write(Path.join(files.dest, options.font + ".svg"), font.render({
-        font: options.font,
-        canvasSize: glyphs[0].height,
-        glyphs: glyphs
-      }));
+  function createSVG(filename, fontname, glyphs) {
+    var contents = font.render({
+      font: fontname,
+      canvasSize: glyphs[0].height,
+      glyphs: glyphs
     });
 
-  });
+    grunt.file.write(filename, contents);
+    grunt.log.writeln("Created: " + filename);
+    return contents;
+  }
+
+  function createTTF(filename, svg) {
+    var ttf = FontConversion.svg2ttf(svg);
+    var buffer = new Buffer(ttf.buffer)
+    grunt.file.write(filename, buffer);
+    grunt.log.writeln("Created: " + filename);
+    return buffer;
+  }
+
+  function createWOFF(filename, ttf, callback) {
+    FontConversion.ttf2woff(ttf, {}, function(err, woff) {
+      grunt.file.write(filename, woff.buffer);
+      callback();
+    });
+  }
+
+  function createEOT(filename, ttf) {
+    var eot = FontConversion.ttf2eot(ttf);
+    grunt.file.write(filename, eot);
+    grunt.log.writeln("Created: " + filename);
+  }
 
   function parseSVG(contents) {
     // TODO: Ignore/error on invalid content?
