@@ -77,7 +77,7 @@ module.exports = function(grunt) {
     });
 
     grunt.file.write(filename, contents);
-    grunt.log.writeln("Created: " + filename);
+    grunt.log.ok("Created: " + filename);
     return contents;
   }
 
@@ -85,13 +85,14 @@ module.exports = function(grunt) {
     var ttf = FontConversion.svg2ttf(svg);
     var buffer = new Buffer(ttf.buffer)
     grunt.file.write(filename, buffer);
-    grunt.log.writeln("Created: " + filename);
+    grunt.log.ok("Created: " + filename);
     return buffer;
   }
 
   function createWOFF(filename, ttf, callback) {
     FontConversion.ttf2woff(ttf, {}, function(err, woff) {
       grunt.file.write(filename, woff.buffer);
+      grunt.log.ok("Created: " + filename);
       callback();
     });
   }
@@ -99,7 +100,7 @@ module.exports = function(grunt) {
   function createEOT(filename, ttf) {
     var eot = FontConversion.ttf2eot(ttf);
     grunt.file.write(filename, eot);
-    grunt.log.writeln("Created: " + filename);
+    grunt.log.ok("Created: " + filename);
   }
 
   function parseSVG(contents) {
