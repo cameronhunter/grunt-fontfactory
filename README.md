@@ -69,8 +69,5 @@ grunt.initConfig({
 
 ### Useful Links
 
-* [@font-face support](http://caniuse.com/#feat=fontface)
-* [TTF font support](http://caniuse.com/#feat=ttf)
-* [SVG font support](http://caniuse.com/#feat=svg-fonts)
-* [WOFF font support](http://caniuse.com/#feat=woff)
-* [EOT font support](http://caniuse.com/#feat=eot)
+* [MDN - SVG Fonts](https://developer.mozilla.org/en-US/docs/Web/SVG/Tutorial/SVG_fonts)
+* Browser support: [@font-face](http://caniuse.com/#feat=fontface), [TTF](http://caniuse.com/#feat=ttf), [SVG](http://caniuse.com/#feat=svg-fonts), [WOFF](http://caniuse.com/#feat=woff), [EOT](http://caniuse.com/#feat=eot)
