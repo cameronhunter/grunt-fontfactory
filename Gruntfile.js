@@ -46,6 +46,6 @@ module.exports = function(grunt) {
     "clean",
     "fontfactory",
     "nodeunit",
-    // "clean"
+    "clean"
   ]);
 };
