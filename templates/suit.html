@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>{{font}} Demo Page</title>
+  <link rel="stylesheet" href="{{font}}.css">
+  <style>
+    .Icons {
+      font-size: 24px;
+    }
+  </style>
+</head>
+<body>
+
+  <h1>{{font}}</h1>
+
+  <div class="Icons">
+    {{#glyphs}}
+    <span class="Icon Icon--{{name}}" alt="{{name}}" title="{{name}}"></span>
+    {{/glyphs}}
+  </div>
+
+</body>
+</html>

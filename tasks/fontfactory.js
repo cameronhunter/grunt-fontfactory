@@ -29,6 +29,7 @@ var FontConversion = {
 // TODO: Check that number of glyphs isn't larger than the unicode private use area
 // TODO: Provide some stability between builds when choosing the unicode codepoints
 // TODO: Ensure all the glyphs are the same height
+// TODO: CamelCase glyph names
 
 module.exports = function(grunt) {
 
@@ -48,25 +49,31 @@ module.exports = function(grunt) {
     this.files.forEach(function(files) {
       var fontDestination = Path.join(files.dest, options.font);
 
-      var svg = createSVG(fontDestination + ".svg", options.font, readGlyphs(files));
+      var glyphs = readGlyphs(files);
+
+      var svg = createSVG(fontDestination + ".svg", options.font, glyphs);
       var ttf = createTTF(fontDestination + ".ttf", svg);
       createEOT(fontDestination + ".eot", ttf);
       createWOFF(fontDestination + ".woff", ttf, done);
 
-      createCSS(fontDestination + ".css", "suit", svg);
+      createCSS(fontDestination + ".css", options.font, "suit", glyphs);
+      createHTML(fontDestination + ".html", options.font, "suit", glyphs);
     });
   });
 
-  function createCSS(filename, syntax, svg) {
-    var doc = dom.parseFromString(svg, "application/xml");
-    var font = doc.getElementsByTagName("font")[0].getAttribute("id");
-    var glyphs = Array.prototype.slice.apply(doc.getElementsByTagName("glyph")).map(function(glyph) {
-      return {
-        name: glyph.getAttribute("glyph-name"),
-        character: glyph.getAttribute("unicode")
-      };
+  function createHTML(filename, font, syntax, glyphs) {
+    var HTML = template(syntax + ".html");
+
+    var contents = HTML.render({
+      font: font,
+      glyphs: glyphs
     });
 
+    grunt.file.write(filename, contents);
+    grunt.log.ok("Created: " + filename);
+  }
+
+  function createCSS(filename, font, syntax, glyphs) {
     var CSS = template(syntax + ".css");
 
     var contents = CSS.render({
@@ -82,10 +89,12 @@ module.exports = function(grunt) {
     return files.src.map(function(file, index) {
       var svg = parseSVG(grunt.file.read(file));
       var name = Path.basename(file).replace(/\.svg$/i, "");
-      var character = String.fromCharCode(UNICODE_PRIVATE_USE_AREA.start + index);
+      var codepoint = UNICODE_PRIVATE_USE_AREA.start + index;
+      var character = String.fromCharCode(codepoint);
 
       return grunt.util._.merge(svg, {
         name: name,
+        codepoint: codepoint.toString(16),
         character: StringUtils.escapeToNumRef(character, 16)
       });
     });
