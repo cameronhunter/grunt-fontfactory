@@ -33,8 +33,7 @@ var FontConversion = {
 module.exports = function(grunt) {
 
   var dom = new DOMParser();
-  var fontTemplate = Path.join(__dirname, "..", "templates", "font.svg");
-  var font = Hogan.compile(grunt.file.read(fontTemplate));
+  var font = template("font.svg");
 
   grunt.registerMultiTask("fontfactory", Package.description, function() {
     this.requiresConfig([this.name, this.target, "src"].join("."));
@@ -53,8 +52,31 @@ module.exports = function(grunt) {
       var ttf = createTTF(fontDestination + ".ttf", svg);
       createEOT(fontDestination + ".eot", ttf);
       createWOFF(fontDestination + ".woff", ttf, done);
+
+      createCSS(fontDestination + ".css", "suit", svg);
     });
   });
+
+  function createCSS(filename, syntax, svg) {
+    var doc = dom.parseFromString(svg, "application/xml");
+    var font = doc.getElementsByTagName("font")[0].getAttribute("id");
+    var glyphs = Array.prototype.slice.apply(doc.getElementsByTagName("glyph")).map(function(glyph) {
+      return {
+        name: glyph.getAttribute("glyph-name"),
+        character: glyph.getAttribute("unicode")
+      };
+    });
+
+    var CSS = template(syntax + ".css");
+
+    var contents = CSS.render({
+      font: font,
+      glyphs: glyphs
+    });
+
+    grunt.file.write(filename, contents);
+    grunt.log.ok("Created: " + filename);
+  }
 
   function readGlyphs(files) {
     return files.src.map(function(file, index) {
@@ -101,6 +123,10 @@ module.exports = function(grunt) {
     var eot = FontConversion.ttf2eot(ttf);
     grunt.file.write(filename, eot);
     grunt.log.ok("Created: " + filename);
+  }
+
+  function template(name) {
+    return Hogan.compile(grunt.file.read(Path.join(__dirname, "..", "templates", name)));
   }
 
   function parseSVG(contents) {

@@ -1,0 +1,6 @@
+{{#glyphs}}
+.Icon .Icon--{{name}} {
+  content: '{{character}}';
+}
+
+{{/glyphs}}
