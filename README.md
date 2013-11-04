@@ -53,6 +53,18 @@ Default value: `'my-font'`
 
 A string value that is used to name your font-family.
 
+#### options.onlyFonts
+Type: `Boolean`
+Default value: `false`
+
+Allow to generate only fonts.
+
+#### options.appendCodepoints
+Type: `Boolean`
+Default value: `false`
+
+Allow to append codepoints to icon files in order to always keep the same codepoints.
+
 ### Example
 
 ```js
