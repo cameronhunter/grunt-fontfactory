@@ -27,16 +27,27 @@ module.exports = function(grunt) {
     fontfactory: {
       test: {
         options: {
-          font: "my-test-font"
+          font: "my-test-font",
+          onlyFonts: true
         },
         src: "test/fixtures/originalicons/*.svg",
         dest: "<%= temp %>"
       },
       testcleanicons: {
         options: {
-          font: "test-cleanicons-font"
+          font: "test-cleanicons-font",
+          onlyFonts: true
         },
         src: "test/fixtures/cleanicons/*.svg",
+        dest: "<%= temp %>"
+      },
+      testprefixedicons: {
+        options: {
+          font: "test-prefixedicons-font",
+          onlyFonts: true,
+          appendCodepoints: true
+        },
+        src: "test/fixtures/prefixedicons/*.svg",
         dest: "<%= temp %>"
       }
     },
@@ -53,6 +64,7 @@ module.exports = function(grunt) {
     "clean",
     "fontfactory:test",
     "fontfactory:testcleanicons",
+    "fontfactory:testprefixedicons",
     "nodeunit",
     // "clean"
   ]);

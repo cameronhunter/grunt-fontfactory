@@ -17,6 +17,7 @@ var UNICODE_PRIVATE_USE_AREA = {
 var DOMParser = require("xmldom").DOMParser;
 var Hogan = require("hogan.js");
 var Path = require("path");
+var Fs = require("fs");
 var StringUtils = require("strutil");
 var Package = require("../package.json");
 var FontConversion = {
@@ -35,12 +36,13 @@ module.exports = function(grunt) {
 
   var dom = new DOMParser();
   var font = template("font.svg");
+  var options;
 
   grunt.registerMultiTask("fontfactory", Package.description, function() {
     this.requiresConfig([this.name, this.target, "src"].join("."));
     this.requiresConfig([this.name, this.target, "dest"].join("."));
 
-    var options = this.options({
+    options = this.options({
       font: "my-font"
     });
 
@@ -56,8 +58,10 @@ module.exports = function(grunt) {
       createEOT(fontDestination + ".eot", ttf);
       createWOFF(fontDestination + ".woff", ttf, done);
 
-      createCSS(fontDestination + ".css", options.font, "suit", glyphs);
-      createHTML(fontDestination + ".html", options.font, "suit", glyphs);
+      if(!options.onlyFonts) {
+        createCSS(fontDestination + ".css", options.font, "suit", glyphs);
+        createHTML(fontDestination + ".html", options.font, "suit", glyphs);
+      }
     });
   });
 
@@ -86,17 +90,49 @@ module.exports = function(grunt) {
   }
 
   function readGlyphs(files) {
-    return files.src.map(function(file, index) {
-      var svg = parseSVG(grunt.file.read(file));
-      var name = Path.basename(file).replace(/\.svg$/i, "");
-      var codepoint = UNICODE_PRIVATE_USE_AREA.start + index;
-      var character = String.fromCharCode(codepoint);
-
-      return grunt.util._.merge(svg, {
-        name: name,
-        codepoint: codepoint.toString(16),
-        character: StringUtils.escapeToNumRef(character, 16)
-      });
+    var usedCodePoints = [];
+    return files.src.map(function(file) {
+      var matches = Path.basename(file).match(/^(?:u([0-9a-f]{4})\-)?(.*).svg$/i);
+      if(matches&&matches[1]) {
+        usedCodePoints.push(parseInt(matches[1], 16));
+        return {
+          name: matches[2],
+          codepoint: matches[1],
+          character: StringUtils.escapeToNumRef(
+            String.fromCharCode(parseInt(matches[1], 16)),
+            16),
+          file: file
+        };
+      } else if(matches) {
+        return {
+          name: matches[2],
+          codepoint: 0,
+          character: '',
+          file: file
+        };
+      }
+    }).map(function(glyph) {
+      var svg = parseSVG(grunt.file.read(glyph.file));
+      // Find a free codepoint and rename the file
+      if(0 === glyph.codepoint) {
+        for(var i = UNICODE_PRIVATE_USE_AREA.start,
+          j=UNICODE_PRIVATE_USE_AREA.end; i<j; i++) {
+          if(-1 === usedCodePoints.indexOf(i)) {
+            glyph.codepoint = i.toString(16);
+            glyph.character = StringUtils.escapeToNumRef(
+              String.fromCharCode(i), 16);
+            usedCodePoints.push(i);
+            if(options.appendCodepoints) {
+              Fs.renameSync(glyph.file, Path.dirname(glyph.file) + '/'
+                + 'u' + i.toString(16).toUpperCase() + '-' + glyph.name + '.svg');
+              grunt.log.ok("Saved codepoint: " + 'u'
+                + i.toString(16).toUpperCase() +' for ' + glyph.name + '.svg');
+            }
+            break;
+          }
+        }
+      }
+      return grunt.util._.merge(svg, glyph);
     });
   }
 
