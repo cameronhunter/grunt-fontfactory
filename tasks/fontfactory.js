@@ -2,7 +2,7 @@
  * grunt-fontfactory
  * https://github.com/cameronhunter/grunt-fontfactory
  *
- * Copyright (c) 2013 Cameron Hunter
+ * Copyright (c) 2013 Cameron Hunter, Nicolas Froidure
  * Licensed under the MIT license.
  */
 
@@ -19,7 +19,6 @@ var Hogan = require("hogan.js");
 var Path = require("path");
 var StringUtils = require("strutil");
 var Package = require("../package.json");
-var Fs = require("fs");
 var FontConversion = {
   svg2ttf: require("svg2ttf"),
   ttf2eot: require("ttf2eot"),
