@@ -30,6 +30,7 @@
   },
   "dependencies": {
     "xmldom": "latest",
+    "svg-pathdata": "latest",
     "hogan.js": "latest",
     "strutil": "latest",
     "svg2ttf": "latest",

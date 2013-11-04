@@ -25,6 +25,7 @@ var FontConversion = {
   ttf2eot: require("ttf2eot"),
   ttf2woff: require("ttf2woff")
 };
+var SVGPathData = require("svg-pathdata");
 
 // TODO: Check that number of glyphs isn't larger than the unicode private use area
 // TODO: Provide some stability between builds when choosing the unicode codepoints
@@ -152,10 +153,49 @@ module.exports = function(grunt) {
     // TODO: Handle possibility of no/multiple paths
     var path = svg.getElementsByTagName("path")[0];
 
+    var parser = new SVGPathData.Parser(function(command) {
+      var origY = command.y || 0;
+      if('undefined' !== command.y && command.y !== 0) {
+        if(notFirst && command.relative) {
+          command.y = -command.y;
+        } else {
+          command.y = height - command.y;
+        }
+      }
+      if('undefined' !== command.y1 && command.y1 !== 0) {
+        if(notFirst && command.relative) {
+          command.y1 = -command.y1;
+        } else {
+          command.y1 = height - command.y1;
+        }
+      }
+      if('undefined' !== command.y2 && command.y2 !== 0) {
+        if(notFirst && command.relative) {
+          command.y2 = -command.y2;
+        } else {
+          command.y2 = height - command.y2;
+        }
+      }
+      if('undefined' !== command.rY && command.rY !== 0) {
+        if(notFirst && command.relative) {
+          command.rY = -command.rY;
+        } else {
+          command.rY = height - command.rY;
+        }
+      }
+      notFirst = true;
+      encoder.write(command);
+    })
+    , encoder = new SVGPathData.Encoder(function(chunk){
+      d += ' ' + chunk;
+    })
+    , d = ''
+    , notFirst = false;
+    parser.read(path.getAttribute("d")).end();
     return {
       width: svg.getAttribute("width"),
       height: svg.getAttribute("height"),
-      d: path.getAttribute("d")
+      d: d
     };
   }
 

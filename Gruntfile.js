@@ -29,7 +29,14 @@ module.exports = function(grunt) {
         options: {
           font: "my-test-font"
         },
-        src: "test/fixtures/*.svg",
+        src: "test/fixtures/originalicons/*.svg",
+        dest: "<%= temp %>"
+      },
+      testcleanicons: {
+        options: {
+          font: "test-cleanicons-font"
+        },
+        src: "test/fixtures/cleanicons/*.svg",
         dest: "<%= temp %>"
       }
     },
@@ -44,7 +51,8 @@ module.exports = function(grunt) {
   grunt.registerTask("default", ["test"]);
   grunt.registerTask("test", [
     "clean",
-    "fontfactory",
+    "fontfactory:test",
+    "fontfactory:testcleanicons",
     "nodeunit",
     // "clean"
   ]);
