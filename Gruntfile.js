@@ -3,7 +3,7 @@ module.exports = function(grunt) {
   require("matchdep").filterDev("grunt-*").forEach(grunt.loadNpmTasks);
 
   grunt.initConfig({
-    temp: ".tmp",
+    temp: __dirname+"/test/results/",
 
     bump: {
       options: {
@@ -21,15 +21,33 @@ module.exports = function(grunt) {
     },
 
     clean: {
-      tests: ["<%= temp %>"],
+      tests: ["<%= temp %>*"],
     },
 
     fontfactory: {
-      test: {
+      testprefixedicons: {
         options: {
-          font: "my-test-font"
+          font: "test-prefixedicons-font",
+          onlyFonts: true,
+          appendCodepoints: true
         },
-        src: "test/fixtures/*.svg",
+        src: "test/fixtures/prefixedicons/*.svg",
+        dest: "<%= temp %>"
+      },
+      testoriginalicons: {
+        options: {
+          font: "my-test-font",
+          onlyFonts: true
+        },
+        src: "test/fixtures/originalicons/*.svg",
+        dest: "<%= temp %>"
+      },
+      testcleanicons: {
+        options: {
+          font: "test-cleanicons-font",
+          onlyFonts: false
+        },
+        src: "test/fixtures/cleanicons/*.svg",
         dest: "<%= temp %>"
       }
     },
@@ -43,9 +61,11 @@ module.exports = function(grunt) {
 
   grunt.registerTask("default", ["test"]);
   grunt.registerTask("test", [
-    "clean",
-    "fontfactory",
-    "nodeunit",
-    // "clean"
+    "clean:tests",
+    "fontfactory:testcleanicons",
+    "fontfactory:testprefixedicons",
+    "fontfactory:testoriginalicons",
+    "nodeunit:tests",
+    "clean:tests"
   ]);
 };

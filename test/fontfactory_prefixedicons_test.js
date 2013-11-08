@@ -27,8 +27,8 @@ exports.svgfont = {
   svg_font_file_creation: function(test) {
     test.expect(1);
 
-    var actual = grunt.file.read("test/results/my-test-font.svg");
-    var expected = grunt.file.read("test/expected/my-test-font.svg");
+    var actual = grunt.file.read("test/results/test-prefixedicons-font.svg");
+    var expected = grunt.file.read("test/expected/test-prefixedicons-font.svg");
     test.equal(actual, expected, "should describe what the default behavior is.");
 
     test.done();
