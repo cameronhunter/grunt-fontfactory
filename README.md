@@ -61,8 +61,10 @@ grunt.initConfig({
     options: {
       font: "my-font-name"
     },
-    src: 'glyphs/*.svg',
-    dest: 'font/'
+    font: {
+      src: 'glyphs/*.svg',
+      dest: 'font/'
+    }
   },
 })
 ```
