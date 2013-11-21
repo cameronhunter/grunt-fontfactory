@@ -145,9 +145,8 @@ module.exports = function(grunt) {
     // TODO: Handle possibility of no svg element
     var svg = doc.getElementsByTagName("svg")[0];
 
-    // TODO: Handle possibility of "px"
-    var width  = svg.getAttribute("width");
-    var height = svg.getAttribute("height");
+    var width  = parseFloat(svg.getAttribute("width"));
+    var height = parseFloat(svg.getAttribute("height"));
 
     // TODO: Handle possibility of no/multiple paths
     var path = svg.getElementsByTagName("path")[0];
