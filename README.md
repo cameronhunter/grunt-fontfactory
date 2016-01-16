@@ -1,4 +1,6 @@
-# grunt-fontfactory [![Build Status](https://secure.travis-ci.org/cameronhunter/grunt-fontfactory.png)](http://travis-ci.org/cameronhunter/grunt-fontfactory)
+[![No Maintenance Intended](http://unmaintained.tech/badge.svg)](http://unmaintained.tech/) [![Build Status](https://secure.travis-ci.org/cameronhunter/grunt-fontfactory.svg)](http://travis-ci.org/cameronhunter/grunt-fontfactory)
+
+# grunt-fontfactory
 
 Create a font from multiple SVG glyph files.
 
